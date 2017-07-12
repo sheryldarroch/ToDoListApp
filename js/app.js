@@ -56,3 +56,64 @@ let todosList = {
     this.displayTodos();
   }
 };
+
+const displayTodosButton = document.querySelector('#displayTodosButton');
+const toggleAllButton = document.querySelector('#toggleAllButton');
+const addTodoButton = document.querySelector('#addTodoButton');
+const changeTodoButton = document.querySelector('#changeTodoButton');
+const deleteTodoButton = document.querySelector('#deleteTodoButton');
+const toggleCompletedButton = document.querySelector('#toggleCompletedButton');
+
+let handlers = {
+  displayTodos: () => {
+     displayTodosButton.addEventListener('click', () => {
+        todosList.displayTodos();                                   
+    }); 
+  },
+  toggleAll: () => {
+    toggleAllButton.addEventListener('click', () => {
+        todosList.toggleAll();
+    });  
+  },
+  addTodo: () => {
+    addTodoButton.addEventListener('click', () => {
+       let todoText = document.querySelector('#addTodoTextInput'); 
+       todosList.addTodos(todoText.value);
+       todoText.value = '';
+    });  
+  },
+  changeTodo: () => {
+    changeTodoButton.addEventListener('click', () => {
+        let todoText = document.querySelector('#changeTodoTextInput');
+        let position = document.querySelector('#changeTodoNumberInput');
+        todosList.changeTodos(parseInt(position.value), todoText.value);
+        todoText.value = '';
+        position.value = '';
+    });
+  },
+  deleteTodo: () => {
+    deleteTodoButton.addEventListener('click', () => {
+        let position = document.querySelector('#deleteTodoNumberInput');
+        todosList.deleteTodos(parseInt(position.value));
+        position.value = '';
+    });
+  },
+  toggleCompleted: () => {
+    toggleCompletedButton.addEventListener('click', () => {
+        let position = document.querySelector('#toggleCompletedNumberInput');
+        todosList.toggleCompleted(parseInt(position.value));
+        position.value = '';                                               
+    });
+  }
+};
+
+//Call handlers
+handlers.displayTodos();
+handlers.toggleAll();
+handlers.addTodo();
+handlers.changeTodo();
+handlers.deleteTodo();
+handlers.toggleCompleted();
+
+
+
