@@ -11,6 +11,10 @@ let todosList = {
   },
   deleteTodos: function(position) {
     this.todos.splice(position, 1);
+    if(this.todos.length === 0) {
+      let toggleAllIcon = document.querySelector('.toggleAllIcon');
+      toggleAllIcon.style.display = 'none';
+    }
     view.displayTodos();
   },
   toggleCompleted: function(position) {
@@ -98,6 +102,10 @@ let view = {
       todoLi.appendChild(view.createDeleteButton());
       todoUl.appendChild(todoLi);
     });
+    if(todosList.todos.length > 0) {
+      let toggleAllIcon = document.querySelector('.toggleAllIcon');
+      toggleAllIcon.style.display = 'block';
+    }
   },
   createToggleIcon: () => {
     let todoToggleIcon = document.createElement('img');
@@ -105,9 +113,9 @@ let view = {
     return todoToggleIcon;
   },
   createDeleteButton: () => {
-    let deleteTodoButton = document.createElement('button');
-    deleteTodoButton.textContent = 'Delete';
-    deleteTodoButton.className = 'deleteButton';
+    let deleteTodoButton = document.createElement('img');
+    deleteTodoButton.setAttribute('src', '../images/delete-circle.svg');
+    deleteTodoButton.className = 'deleteButton';    
     return deleteTodoButton;
   },
 //  createTallyCounter: () => {
@@ -120,7 +128,8 @@ let view = {
   setUpEventListeners: () => {
     let todoUl = document.querySelector('#todoList');
     let todoToggleAllIcon = document.querySelector('.toggleAllIcon');
-
+    let addTodoTextInput = document.querySelector('#addTodoTextInput');
+    
     todoUl.addEventListener('click', (e) => {
       let elementClicked = e.target;
       let position = parseInt(elementClicked.parentNode.id);
@@ -132,7 +141,7 @@ let view = {
     });
     todoToggleAllIcon.addEventListener('click', ()=> {
       todosList.toggleAll();      
-    });    
+    }); 
   }
 };
 
