@@ -8,6 +8,7 @@ let todosList = {
   },
   changeTodos: function(position, todoText) {
     this.todos[position].todoText = todoText;
+    view.displayTodos();
   },
   deleteTodos: function(position) {
     this.todos.splice(position, 1);
@@ -47,8 +48,6 @@ let todosList = {
 };
 
 const addTodoButton = document.querySelector('#addTodoButton');
-const changeTodoButton = document.querySelector('#changeTodoButton');
-
 
 let handlers = {
   addTodo: () => {
@@ -57,27 +56,18 @@ let handlers = {
        todosList.addTodos(todoText.value);
        todoText.value = '';
        view.displayTodos();
-    });  
-  },
-  changeTodo: () => {
-    changeTodoButton.addEventListener('click', () => {
-        let todoText = document.querySelector('#changeTodoTextInput');
-        let position = document.querySelector('#changeTodoNumberInput');
-        todosList.changeTodos(parseInt(position.value), todoText.value);
-        todoText.value = '';
-        position.value = '';
-        view.displayTodos();
     });
-  }
+  } 
 };
 
 //Call handlers
 handlers.addTodo();
-handlers.changeTodo();
 
 let view = {
   displayTodos: () => {
     let todoUl = document.querySelector('#todoList');
+    let tallyCounter = document.querySelector('#tallyCounter');
+    tallyCounter.innerHTML = '';
     todoUl.innerHTML = '';
     todosList.todos.forEach(function(todo, position) {
       let todoLi = document.createElement('li');
@@ -99,12 +89,14 @@ let view = {
 
       todoLi.appendChild(todoToggleIcon);
       todoLi.appendChild(todoTextTag);
+      todoLi.appendChild(view.createEditIcon());
       todoLi.appendChild(view.createDeleteButton());
       todoUl.appendChild(todoLi);
     });
     if(todosList.todos.length > 0) {
       let toggleAllIcon = document.querySelector('.toggleAllIcon');
       toggleAllIcon.style.display = 'block';
+      view.createTallyCounter();
     }
   },
   createToggleIcon: () => {
@@ -112,19 +104,25 @@ let view = {
     todoToggleIcon.className = 'toggleIcon';
     return todoToggleIcon;
   },
+  createEditIcon: () => {
+    let editIcon = document.createElement('img');
+    editIcon.setAttribute('src','../images/edit.svg');
+    editIcon.className = 'editIcon';
+    return editIcon;
+  },
   createDeleteButton: () => {
     let deleteTodoButton = document.createElement('img');
     deleteTodoButton.setAttribute('src', '../images/delete-circle.svg');
     deleteTodoButton.className = 'deleteButton';    
     return deleteTodoButton;
   },
-//  createTallyCounter: () => {
-//    let tallyCounter = document.getElementById('tallyCounter');
-//    let todosNumber = parseInt(todosList.todos.length);
-//    let p = tallyCounter.innerHTML = '<p>';
-//    p += todosNumber + ' items left</p>';
-//    return p;
-//  },
+  createTallyCounter: () => {
+    let tallyCounter = document.getElementById('tallyCounter');
+    let todosNumber = parseInt(todosList.todos.length);
+    let p = document.createElement('p');
+    p.innerHTML = `${todosNumber} items left`;
+    tallyCounter.appendChild(p);
+  },
   setUpEventListeners: () => {
     let todoUl = document.querySelector('#todoList');
     let todoToggleAllIcon = document.querySelector('.toggleAllIcon');
@@ -136,8 +134,11 @@ let view = {
       if(elementClicked.className === 'deleteButton') {
           todosList.deleteTodos(position);
       } else if (elementClicked.className === 'toggleIcon') {
-            todosList.toggleCompleted(position);
-        }
+          todosList.toggleCompleted(position);
+      } else if (elementClicked.className === 'editIcon') {
+          let todoText = prompt("Enter changed todo item");
+          todosList.changeTodos(position, todoText);          
+      }
     });
     todoToggleAllIcon.addEventListener('click', ()=> {
       todosList.toggleAll();      

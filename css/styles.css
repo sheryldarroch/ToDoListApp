@@ -87,6 +87,7 @@ h1 {
   font-size: 1.25rem;
 }
 
+.editIcon,
 .deleteButton,
 .toggleIcon {
   width: 1.5rem;
@@ -95,6 +96,7 @@ h1 {
   margin: 0;
 }
 
+.editIcon:hover,
 .deleteButton:hover {
   transform: scale(1.2);
   transition: transform 0.5s ease-in-out;
@@ -124,6 +126,7 @@ h1 {
     font-size: 1.75rem;
   }
   
+  .editIcon,
   .deleteButton {
     width: 2.25rem;
     height: 2.25rem;
