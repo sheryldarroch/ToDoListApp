@@ -3,10 +3,113 @@
 }
 
 body {
-  background-color: #ddd; 
+  background-color: #eee; 
   text-align: center;
+  font-family: "Open Sans, sans-serif";
+  font-size: 1.25rem;
+}
+
+button {
+  border-radius: 0.313rem;
+  background-color: #ddd;
+  color: #336699;
+}
+
+.todosApp {
+  width: 80%;
+  max-width: 56rem;
+  margin: 3rem auto;
+  padding: 2rem;
+  border: solid 0.125rem #336699;
+  border-radius: 0.625rem;
+  box-shadow: 0.313rem 0.313rem 0.313rem rgba(0,0,0,0.6), 0.625rem 0.625rem 0.625rem rgba(0,0,0,0.3);
+  
 }
 
 h1 {
-  color: blue;
+  color: #336699;
+  font-family: "Anton, sans-serif";
+  padding: 0;
+  margin: 0 0 1rem;
 }
+
+.todoListControls {
+  width: 80%;
+  padding: 0.5rem 0;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-content: center;
+}
+
+.todoListControls input {
+  width: 60%;
+  height: 2rem;
+  border: solid 0.0125rem #336699;
+  padding: 0.25rem;
+}
+
+.toggleAllIcon {
+  width: 1.625rem;
+  height: 1.625rem;
+  margin-right: 0.313rem;
+  
+}
+
+#todoList {
+  padding: 0;
+  list-style: none;
+  list-style-position: inside;
+  text-align: left;
+}
+
+#todoList li {
+  margin: 0;
+  padding: 0.25rem;
+  border: solid 0.0125rem #336699;
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  justify-content: space-between;  
+}
+
+#todoList Li p {
+  margin: 0 auto 0 0.313rem;
+}
+
+.deleteButton {
+  background-color: rgba(255,0,0,0.2);
+}
+
+.toggleIcon {
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0.313rem;
+  margin: 0;
+}
+
+@media screen and (min-width: 768px) {
+  h1 {
+    font-size: 3.5rem;
+  }
+  
+  #todoList,
+  .todoListControls {
+    font-size: 1.5rem;
+  }
+  
+  .todoListControls input {
+    height: 2.5rem;
+    width: 80%;
+  }
+  
+  .toggleAllIcon {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  
+  .toggleIcon {
+    width: 2rem;
+    height: 2rem;
+  }

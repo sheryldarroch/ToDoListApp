@@ -2,36 +2,36 @@
 <html>
   <head>
     <title>MyTodosApp</title>
+    <link href="https://fonts.googleapis.com/css?family=Anton|Open+Sans" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
   </head>
   <body>
-    <h1>My Todos App</h1>
-    
-    <div>
-      <button id="toggleAllButton">Toggle All</button>
-    </div>
-    
-    <div>
-      <input type="text" id="addTodoTextInput">
-      <button id="addTodoButton">Add Todo Item</button>
-    </div>
-  
-    <div>
-      <input type="number" id="changeTodoNumberInput">
-      <input type="text" id="changeTodoTextInput">
-      <button id="changeTodoButton">Change Todo Item</button>      
-    </div>
+    <div class="todosApp">
+      <h1>My Todos App</h1>
+      
+      <div class="todoListControls">
+        <img src='images/arrow.svg' class='toggleAllIcon'>
+        <input type="text" id="addTodoTextInput">
+        <button id="addTodoButton">Add Todo Item</button>
+      </div>
 
-    <div>
-      <input type="number" id="toggleCompletedNumberInput">
-      <button id="toggleCompletedButton">Todo Item Completed</button>       
-    </div>  
-    
-    <div>
-      <ul id="todoList">
-      </ul>
+      <div>
+        <ul id="todoList">
+        </ul>
+  <!--
+        <div id="tallyCounter">
+        </div>
+  -->
+      </div>  
+      
+      <div>
+        <input type="number" id="changeTodoNumberInput">
+        <input type="text" id="changeTodoTextInput">
+        <button id="changeTodoButton">Change Todo Item</button>      
+      </div>
+  
     </div>
-    
+       
     <script src="js/app.js"></script>  
   </body>
 </html>
