@@ -64,6 +64,7 @@ h1 {
 }
 
 #todoList {
+  position: relative;  
   padding: 0;
   margin-top: 0.5rem;
   list-style: none;
@@ -102,6 +103,46 @@ h1 {
   transition: transform 0.5s ease-in-out;
 }
 
+.editModal,
+.changeTodoModal {
+  position: absolute;
+  top: 25%;
+  right: 0;
+  width: 8rem;
+  height: 1rem;
+  font-size: 0.65rem;
+  text-align: center;
+  background: #b3cce6;
+  color: #fff;
+  border: solid 0.0125rem #336699;
+}
+
+.editModal span {
+  padding: 0.5rem;
+  margin: 0;
+}
+
+.editModal span:last-child {
+  color: red;
+  padding-left: 0;
+}
+
+.changeTodoModal {
+  top: 100%;
+  right: 0;
+  width: 100%;
+  height: 2rem;
+  font-size: 1.25rem;
+  text-align: left;
+}
+
+#changeTodoInput {
+  height: 1.5rem;
+  width: 10rem;
+}
+
+
+
 @media screen and (min-width: 768px) {
   h1 {
     font-size: 3.5rem;
@@ -136,3 +177,16 @@ h1 {
     width: 2rem;
     height: 2rem;
   }
+ 
+  .editModal,
+  .changeTodoModal {
+    font-size: 1.25rem;
+    height: 2rem;
+    width: 14rem;
+  }
+  
+  .changeTodoModal {
+    width: 25rem;
+  }
+}
+  

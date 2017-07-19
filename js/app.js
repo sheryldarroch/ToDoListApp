@@ -110,6 +110,63 @@ let view = {
     editIcon.className = 'editIcon';
     return editIcon;
   },
+  createEditModal: () => {
+    let editModal = document.createElement('div');
+    let editLink = document.createElement('span');
+    let cancelLink = document.createElement('span');
+    editModal.className = 'editModal';
+    editLink.textContent = 'Change Todo /';
+    editLink.id = 'editLink';
+    cancelLink.textContent = 'Cancel';
+    cancelLink.id = 'cancelLink';
+    editModal.appendChild(editLink);
+    editModal.appendChild(cancelLink);
+    return editModal;
+  },
+  createEditModalEventListener: (e) => {
+     e.addEventListener('click', (event) => {
+       let elementClicked = event.target;
+       if(elementClicked.id === 'editLink') {
+          //show changeTodoModal
+          let todoLi = elementClicked.parentNode.parentNode;
+          todoLi.style.position = 'relative';
+          todoLi.appendChild(view.createChangeTodoModal());
+          let changeTodoModal = document.querySelector('.changeTodoModal');
+          view.createChangeModalEventListener(changeTodoModal);
+          elementClicked.parentNode.classList.remove('editModal');
+          elementClicked.parentNode.innerHTML = '';
+        } else {
+        //close editModal
+          elementClicked.parentNode.classList.remove('editModal');
+          elementClicked.parentNode.innerHTML = '';
+        }                          
+      });
+  },  
+  createChangeTodoModal: () => {
+    let changeTodoModal = document.createElement('div');
+    let changeTodoInput = document.createElement('input');
+    let changeTodoButton = document.createElement('button');
+    changeTodoModal.className = 'changeTodoModal';
+    changeTodoInput.setAttribute('type', 'text');
+    changeTodoInput.id = 'changeTodoInput';
+    changeTodoButton.textContent = 'change';
+    changeTodoButton.id = 'changeTodoButton';
+    changeTodoModal.appendChild(changeTodoInput);
+    changeTodoModal.appendChild(changeTodoButton);
+    return changeTodoModal;
+  },
+  createChangeModalEventListener: (e) => {
+      e.addEventListener('click', (event) => {
+        let elementClicked = event.target;
+        if(elementClicked.id === 'changeTodoButton') {
+          let changeTodoInput = document.querySelector('#changeTodoInput');
+          let todoText = elementClicked.parentNode.parentNode.childNodes[1];
+          todoText.textContent = changeTodoInput.value;
+          elementClicked.parentNode.classList.remove('changeTodoModal');
+          elementClicked.parentNode.innerHTML = '';
+        }
+      });
+  },
   createDeleteButton: () => {
     let deleteTodoButton = document.createElement('img');
     deleteTodoButton.setAttribute('src', '../images/delete-circle.svg');
@@ -119,8 +176,16 @@ let view = {
   createTallyCounter: () => {
     let tallyCounter = document.getElementById('tallyCounter');
     let todosNumber = parseInt(todosList.todos.length);
+    let todosCompleted = 0;
+    
+    todosList.todos.forEach(function(todo){
+      if(todo.completed === true){
+        todosCompleted++;
+      }
+    });
+    
     let p = document.createElement('p');
-    p.innerHTML = `${todosNumber} items left`;
+    p.innerHTML = `${todosNumber - todosCompleted} items left`;
     tallyCounter.appendChild(p);
   },
   setUpEventListeners: () => {
@@ -136,8 +201,11 @@ let view = {
       } else if (elementClicked.className === 'toggleIcon') {
           todosList.toggleCompleted(position);
       } else if (elementClicked.className === 'editIcon') {
-          let todoText = prompt("Enter changed todo item");
-          todosList.changeTodos(position, todoText);          
+            let todoLi = elementClicked.parentNode;
+            todoLi.style.position = 'relative';
+            todoLi.appendChild(view.createEditModal());
+            let editModal = document.querySelector('.editModal');
+            view.createEditModalEventListener(editModal);        
       }
     });
     todoToggleAllIcon.addEventListener('click', ()=> {
