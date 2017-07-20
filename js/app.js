@@ -80,11 +80,11 @@ let view = {
       todoTextTag.textContent = todoText; 
       
       if(todoCompleted === true) {
-           todoToggleIcon.setAttribute('src', '../images/check-mark.svg');
+           todoToggleIcon.setAttribute('src', './images/check-mark.svg');
            todoTextTag.style.color = '#999';
            todoTextTag.style.textDecoration = 'line-through'; 
         } else {
-            todoToggleIcon.setAttribute('src', '../images/circle.svg');
+            todoToggleIcon.setAttribute('src', './images/circle.svg');
           } 
 
       todoLi.appendChild(todoToggleIcon);
@@ -106,7 +106,7 @@ let view = {
   },
   createEditIcon: () => {
     let editIcon = document.createElement('img');
-    editIcon.setAttribute('src','../images/edit.svg');
+    editIcon.setAttribute('src','./images/edit.svg');
     editIcon.className = 'editIcon';
     return editIcon;
   },
@@ -169,7 +169,7 @@ let view = {
   },
   createDeleteButton: () => {
     let deleteTodoButton = document.createElement('img');
-    deleteTodoButton.setAttribute('src', '../images/delete-circle.svg');
+    deleteTodoButton.setAttribute('src', './images/delete-circle.svg');
     deleteTodoButton.className = 'deleteButton';    
     return deleteTodoButton;
   },
