@@ -1,3 +1,10 @@
+const addTodoTextInput = document.querySelector('#addTodoTextInput');
+const addTodoButton = document.querySelector('#addTodoButton');
+const toggleAllIcon = document.querySelector('.toggleAllIcon');
+const todoUl = document.querySelector('#todoList');
+const todoListExtras = document.querySelector('#todoListExtras');
+
+
 let todosList = {
   todos: [],
   addTodos: function(todoText) {
@@ -13,7 +20,6 @@ let todosList = {
   deleteTodos: function(position) {
     this.todos.splice(position, 1);
     if(this.todos.length === 0) {
-      let toggleAllIcon = document.querySelector('.toggleAllIcon');
       toggleAllIcon.style.display = 'none';
     }
     view.displayTodos();
@@ -47,14 +53,11 @@ let todosList = {
   }
 };
 
-const addTodoButton = document.querySelector('#addTodoButton');
-
 let handlers = {
   addTodo: () => {
     addTodoButton.addEventListener('click', () => {
-       let todoText = document.querySelector('#addTodoTextInput'); 
-       todosList.addTodos(todoText.value);
-       todoText.value = '';
+       todosList.addTodos(addTodoTextInput.value);
+       addTodoTextInput.value = '';
        view.displayTodos();
     });
   } 
@@ -64,10 +67,9 @@ let handlers = {
 handlers.addTodo();
 
 let view = {
-  displayTodos: () => {
-    let todoUl = document.querySelector('#todoList');
-    let tallyCounter = document.querySelector('#tallyCounter');
-    tallyCounter.innerHTML = '';
+  displayTodos: () => { // NEED TO REFACTOR TO TAKE AN ARRAY AS A PARAMETER, THEN NEED TO GO BACK AND ADD PARAMETER WHEREVER IT IS CALLED!!!! //////////////////////////////////////
+    let todosCompleted = view.todosCompleted();
+    todoListExtras.innerHTML = '';
     todoUl.innerHTML = '';
     todosList.todos.forEach(function(todo, position) {
       let todoLi = document.createElement('li');
@@ -94,9 +96,12 @@ let view = {
       todoUl.appendChild(todoLi);
     });
     if(todosList.todos.length > 0) {
-      let toggleAllIcon = document.querySelector('.toggleAllIcon');
       toggleAllIcon.style.display = 'block';
       view.createTallyCounter();
+      view.createTodosFilters();
+    }
+    if(todosCompleted > 0) {
+      view.createClearCompletedLink();
     }
   },
   createToggleIcon: () => {
@@ -160,8 +165,9 @@ let view = {
         let elementClicked = event.target;
         if(elementClicked.id === 'changeTodoButton') {
           let changeTodoInput = document.querySelector('#changeTodoInput');
-          let todoText = elementClicked.parentNode.parentNode.childNodes[1];
-          todoText.textContent = changeTodoInput.value;
+          let todoText = changeTodoInput.value;
+          let position = elementClicked.parentNode.parentNode.id;
+          todosList.changeTodos(position, todoText);
           elementClicked.parentNode.classList.remove('changeTodoModal');
           elementClicked.parentNode.innerHTML = '';
         }
@@ -173,26 +179,67 @@ let view = {
     deleteTodoButton.className = 'deleteButton';    
     return deleteTodoButton;
   },
-  createTallyCounter: () => {
-    let tallyCounter = document.getElementById('tallyCounter');
-    let todosNumber = parseInt(todosList.todos.length);
+  todosCompleted: () => {
     let todosCompleted = 0;
-    
-    todosList.todos.forEach(function(todo){
-      if(todo.completed === true){
-        todosCompleted++;
-      }
-    });
-    
+      
+      todosList.todos.forEach(function(todo){
+        if(todo.completed === true){
+          todosCompleted++;
+        }
+      });
+    return todosCompleted;
+  },
+  createTallyCounter: () => {
+    let tallyCounter = document.createElement('div');
+    let todosNumber = parseInt(todosList.todos.length);
+    let todosCompleted = view.todosCompleted();
     let p = document.createElement('p');
+    tallyCounter.id = 'tallyCounter';
     p.innerHTML = `${todosNumber - todosCompleted} items left`;
     tallyCounter.appendChild(p);
+    todoListExtras.appendChild(tallyCounter);
+  },
+  createTodosFilters: () => {
+   let todosFilters = document.createElement('ul');
+   let filterAll = document.createElement('li');
+   let filterActive = document.createElement('li');
+   let filterCompleted = document.createElement('li');
+   todosFilters.className = 'todosFilters';
+   filterAll.id = 'filterAll';
+   filterAll.textContent = 'All';
+   filterActive.id = 'filterActive';
+   filterActive.textContent = 'Active';
+   filterCompleted.id = 'filterCompleted';
+   filterCompleted.textContent = 'Completed';
+   todosFilters.appendChild(filterAll);
+   todosFilters.appendChild(filterActive);
+   todosFilters.appendChild(filterCompleted);
+   todoListExtras.appendChild(todosFilters);
+  },
+  createFilterAll: () => {
+    view.displayTodos();
+  },
+  createFilterActive: () => {
+    let filterActive = todosList.todos.filter(function(todo) {
+        return todo.completed === false;
+    }); 
+    //use refactored displayTodos function here ////////////////////////////////////////////
+  },
+  createFilterCompleted: () => {
+    todosList.todos.filter(function(todo) {
+        return todo.completed === true;
+    }); 
+   //use refactored displayTodos function here //////////////////////////////////////////
+  },
+  createClearCompletedLink: () => {
+    let clearCompletedLink = document.createElement('div');
+    let p = document.createElement('p');
+    p.id = 'clearCompletedLink';
+    p.innerHTML = 'Clear Completed';
+    clearCompletedLink.appendChild(p);
+    todoListExtras.appendChild(clearCompletedLink);    
   },
   setUpEventListeners: () => {
-    let todoUl = document.querySelector('#todoList');
-    let todoToggleAllIcon = document.querySelector('.toggleAllIcon');
-    let addTodoTextInput = document.querySelector('#addTodoTextInput');
-    
     todoUl.addEventListener('click', (e) => {
       let elementClicked = e.target;
       let position = parseInt(elementClicked.parentNode.id);
@@ -208,9 +255,27 @@ let view = {
             view.createEditModalEventListener(editModal);        
       }
     });
-    todoToggleAllIcon.addEventListener('click', ()=> {
+    toggleAllIcon.addEventListener('click', ()=> {
       todosList.toggleAll();      
-    }); 
+    });
+    todoListExtras.addEventListener('click', (e)=> {
+      let elementClicked = e.target;
+      if(elementClicked.id === 'clearCompletedLink') {
+          todosList.todos.forEach(function(todo, position) {
+              if (todo.completed === true) {
+                todosList.deleteTodos(position);
+                }
+            }); 
+
+        } else if(elementClicked.id === 'filterAll') {
+        
+        } else if(elementClicked.id === 'filterActive') {
+        
+        } else if(elementClicked.id === 'filterCompleted') {
+        
+        }
+      view.displayTodos();
+    });
   }
 };
 
