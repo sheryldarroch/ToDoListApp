@@ -1,6 +1,7 @@
 const addTodoTextInput = document.querySelector('#addTodoTextInput');
 const addTodoButton = document.querySelector('#addTodoButton');
 const toggleAllIcon = document.querySelector('.toggleAllIcon');
+const saveButton = document.querySelector('#saveButton');
 const todoUl = document.querySelector('#todoList');
 const todoListExtras = document.querySelector('#todoListExtras');
 
@@ -105,6 +106,7 @@ let view = {
     //If there are todo items in the list, show the toggleAllIcon, the TallyCounter, and the TodosFilters  
     if(array.length > 0) {
       toggleAllIcon.style.display = 'block';
+//      saveButton.style.display = 'block';
       view.createTallyCounter();
       view.createTodosFilters();
     }
@@ -113,6 +115,7 @@ let view = {
     if(todosCompleted > 0) {
       view.createClearCompletedLink();
     }
+    localStorage.setItem('todoList', JSON.stringify(todosList.todos));                          
   },
   
   // A method to create the todoToggleIcon
@@ -328,5 +331,14 @@ let view = {
 // Call the event listeners method
 view.setUpEventListeners();
 
+// Use localStorage to save todoList
+window.onload = () => {
+  let todoList = localStorage.getItem('todoList');
+  
+  if(todoList) {
+    todosList.todos = JSON.parse(todoList);
+    view.displayTodos(todosList.todos);
+  }
+};
 
 
