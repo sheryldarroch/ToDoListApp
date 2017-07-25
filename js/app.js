@@ -6,34 +6,47 @@ const todoListExtras = document.querySelector('#todoListExtras');
 
 
 let todosList = {
+  //A place to store todo list items
   todos: [],
+  
+  // A method to add todo items to todo list - takes one parameter:the text of the item to add to the list
   addTodos: function(todoText) {
     this.todos.push({
       todoText: todoText,
       completed: false
     });
   },
+  
+  // A method to change the text of an existing item in the todo list - takes two parameters: the position of the item to change, and the new text 
   changeTodos: function(position, todoText) {
     this.todos[position].todoText = todoText;
-    view.displayTodos();
+    view.displayTodos(todosList.todos);
   },
+  
+  // A method to delete a todo item from the todo list - takes one parameter:the position of the item to delete
   deleteTodos: function(position) {
     this.todos.splice(position, 1);
+    //If there are no todo items in the list, hide the toggle all icon
     if(this.todos.length === 0) {
       toggleAllIcon.style.display = 'none';
     }
-    view.displayTodos();
+    view.displayTodos(todosList.todos);
   },
+  
+  // A method to toggle a todo item to and from completed - takes one parameter:the position of the item to toggle
   toggleCompleted: function(position) {
     let todo = this.todos[position];
+    //If todo.completed is true, make it false and vice versa
     todo.completed = !todo.completed;
-    view.displayTodos();
+    view.displayTodos(todosList.todos);
   },
+  
+  // A method to toggle all todo items in the list
   toggleAll: function() {
     let totalTodos = this.todos.length;
     let completedTodos = 0;
     
-    //get number of completed todos
+    //Get number of completed todos
     this.todos.forEach(function(todo) {
       if(todo.completed ===true) {
         completedTodos++;
@@ -41,37 +54,28 @@ let todosList = {
     });
     
     this.todos.forEach(function(todo) {
-      //if everything is true, make everything false
+      //If everything is true, make everything false
       if(completedTodos === totalTodos) {
         todo.completed = false;
-      //otherwise, make everything true
+      //Otherwise, make everything true
       } else {
           todo.completed = true;
       }
     });
-  view.displayTodos();
+  view.displayTodos(todosList.todos);
   }
 };
 
-let handlers = {
-  addTodo: () => {
-    addTodoButton.addEventListener('click', () => {
-       todosList.addTodos(addTodoTextInput.value);
-       addTodoTextInput.value = '';
-       view.displayTodos();
-    });
-  } 
-};
-
-//Call handlers
-handlers.addTodo();
 
 let view = {
-  displayTodos: () => { // NEED TO REFACTOR TO TAKE AN ARRAY AS A PARAMETER, THEN NEED TO GO BACK AND ADD PARAMETER WHEREVER IT IS CALLED!!!! //////////////////////////////////////
+  // A method to display the todo list - takes one parameter:the array to be displayed
+    displayTodos: (array) => { 
     let todosCompleted = view.todosCompleted();
+    //Reset todosListExtras and todoUl to be blank before building/rebuilding the display 
     todoListExtras.innerHTML = '';
     todoUl.innerHTML = '';
-    todosList.todos.forEach(function(todo, position) {
+    //Iterate over the array and create an 'li' for each item in the array  
+    array.forEach(function(todo, position) {
       let todoLi = document.createElement('li');
       let todoText = todo.todoText;
       let todoCompleted = todo.completed;
@@ -81,10 +85,12 @@ let view = {
       todoLi.id = position;
       todoTextTag.textContent = todoText; 
       
+      //If the item has been completed (todo.completed = true), show the check image and draw a line through text
       if(todoCompleted === true) {
            todoToggleIcon.setAttribute('src', './images/check-mark.svg');
            todoTextTag.style.color = '#999';
            todoTextTag.style.textDecoration = 'line-through'; 
+        // Otherwise, show the empty circle image
         } else {
             todoToggleIcon.setAttribute('src', './images/circle.svg');
           } 
@@ -95,26 +101,36 @@ let view = {
       todoLi.appendChild(view.createDeleteButton());
       todoUl.appendChild(todoLi);
     });
-    if(todosList.todos.length > 0) {
+      
+    //If there are todo items in the list, show the toggleAllIcon, the TallyCounter, and the TodosFilters  
+    if(array.length > 0) {
       toggleAllIcon.style.display = 'block';
       view.createTallyCounter();
       view.createTodosFilters();
     }
+      
+    //If there are completed todo items in the list, show the clearCompletedLink  
     if(todosCompleted > 0) {
       view.createClearCompletedLink();
     }
   },
+  
+  // A method to create the todoToggleIcon
   createToggleIcon: () => {
     let todoToggleIcon = document.createElement('img');
     todoToggleIcon.className = 'toggleIcon';
     return todoToggleIcon;
   },
+    
+  // A method to create the editIcon
   createEditIcon: () => {
     let editIcon = document.createElement('img');
     editIcon.setAttribute('src','./images/edit.svg');
     editIcon.className = 'editIcon';
     return editIcon;
   },
+    
+  // A method to create the editModal
   createEditModal: () => {
     let editModal = document.createElement('div');
     let editLink = document.createElement('span');
@@ -128,11 +144,13 @@ let view = {
     editModal.appendChild(cancelLink);
     return editModal;
   },
+    
+  // A method to create the editModalEventListener  
   createEditModalEventListener: (e) => {
      e.addEventListener('click', (event) => {
        let elementClicked = event.target;
        if(elementClicked.id === 'editLink') {
-          //show changeTodoModal
+          //Show changeTodoModal
           let todoLi = elementClicked.parentNode.parentNode;
           todoLi.style.position = 'relative';
           todoLi.appendChild(view.createChangeTodoModal());
@@ -141,12 +159,14 @@ let view = {
           elementClicked.parentNode.classList.remove('editModal');
           elementClicked.parentNode.innerHTML = '';
         } else {
-        //close editModal
+        //Close editModal
           elementClicked.parentNode.classList.remove('editModal');
           elementClicked.parentNode.innerHTML = '';
         }                          
       });
-  },  
+  },
+  
+  // A method to create the changeTodoModal  
   createChangeTodoModal: () => {
     let changeTodoModal = document.createElement('div');
     let changeTodoInput = document.createElement('input');
@@ -160,6 +180,8 @@ let view = {
     changeTodoModal.appendChild(changeTodoButton);
     return changeTodoModal;
   },
+    
+  // A method to create the changeModalEventListener  
   createChangeModalEventListener: (e) => {
       e.addEventListener('click', (event) => {
         let elementClicked = event.target;
@@ -173,12 +195,16 @@ let view = {
         }
       });
   },
+    
+  // A method to create deleteButton  
   createDeleteButton: () => {
     let deleteTodoButton = document.createElement('img');
     deleteTodoButton.setAttribute('src', './images/delete-circle.svg');
     deleteTodoButton.className = 'deleteButton';    
     return deleteTodoButton;
   },
+    
+  // A method to count the number of completed todos (todos.completed = true)  
   todosCompleted: () => {
     let todosCompleted = 0;
       
@@ -189,16 +215,21 @@ let view = {
       });
     return todosCompleted;
   },
+    
+  // A method to create tallyCounter - counts the number of incomplete todo items  
   createTallyCounter: () => {
     let tallyCounter = document.createElement('div');
     let todosNumber = parseInt(todosList.todos.length);
     let todosCompleted = view.todosCompleted();
     let p = document.createElement('p');
     tallyCounter.id = 'tallyCounter';
+    // Total number of todo items minus completed todo items = incomplete todo items
     p.innerHTML = `${todosNumber - todosCompleted} items left`;
     tallyCounter.appendChild(p);
     todoListExtras.appendChild(tallyCounter);
   },
+    
+  // A method to create todosFilters
   createTodosFilters: () => {
    let todosFilters = document.createElement('ul');
    let filterAll = document.createElement('li');
@@ -216,21 +247,29 @@ let view = {
    todosFilters.appendChild(filterCompleted);
    todoListExtras.appendChild(todosFilters);
   },
+    
+  // A method to create filterAll - show all todo items  
   createFilterAll: () => {
-    view.displayTodos();
+    view.displayTodos(todosList.todos);
   },
+    
+  // A method to create filterActive - show only incomplete todo items
   createFilterActive: () => {
     let filterActive = todosList.todos.filter(function(todo) {
         return todo.completed === false;
     }); 
-    //use refactored displayTodos function here ////////////////////////////////////////////
+    view.displayTodos(filterActive);
   },
+    
+  // A method to create filterCompleted - show only completed todo items  
   createFilterCompleted: () => {
-    todosList.todos.filter(function(todo) {
+    let filterCompleted = todosList.todos.filter(function(todo) {
         return todo.completed === true;
     }); 
-   //use refactored displayTodos function here //////////////////////////////////////////
+   view.displayTodos(filterCompleted);
   },
+    
+  // A method to create clearCompletedLink  
   createClearCompletedLink: () => {
     let clearCompletedLink = document.createElement('div');
     let p = document.createElement('p');
@@ -239,7 +278,14 @@ let view = {
     clearCompletedLink.appendChild(p);
     todoListExtras.appendChild(clearCompletedLink);    
   },
+    
+  // A method to create event listeners for addTodoButton, deleteButton, toggleIcon, editIcon, toggleAllIcon, clearCompletedLink and filters   
   setUpEventListeners: () => {
+    addTodoButton.addEventListener('click', () => {
+       todosList.addTodos(addTodoTextInput.value);
+       addTodoTextInput.value = '';
+       view.displayTodos(todosList.todos);
+    });
     todoUl.addEventListener('click', (e) => {
       let elementClicked = e.target;
       let position = parseInt(elementClicked.parentNode.id);
@@ -266,19 +312,20 @@ let view = {
                 todosList.deleteTodos(position);
                 }
             }); 
-
+        view.displayTodos(todosList.todos);
         } else if(elementClicked.id === 'filterAll') {
-        
+            view.createFilterAll();
         } else if(elementClicked.id === 'filterActive') {
-        
+            view.createFilterActive();
         } else if(elementClicked.id === 'filterCompleted') {
-        
+            view.createFilterCompleted();
         }
-      view.displayTodos();
+
     });
   }
 };
 
+// Call the event listeners method
 view.setUpEventListeners();
 
 
